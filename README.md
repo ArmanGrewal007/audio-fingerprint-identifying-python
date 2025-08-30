@@ -29,3 +29,18 @@
 - [Audio Fingerprinting with Python and Numpy](http://willdrevo.com/fingerprinting-and-audio-recognition-with-python/)
 - [Shazam It! Music Recognition Algorithms, Fingerprinting, and Processing](https://www.toptal.com/algorithms/shazam-it-music-processing-fingerprinting-and-recognition)
 - [Creating Shazam in Java](http://royvanrijn.com/blog/2010/06/creating-shazam-in-java/)
+
+## Arman's notes
+- Now this code uses python3.10
+- Updated requirements.txt file
+- 
+```bash
+# Install python3.10.16
+pyenv install 3.10
+pyenv local 3.10
+# Create a venv
+python -m venv venv 
+# Install packages
+python -m pip install --upgrade pip --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org
+pip install -r requirements.txt
+```

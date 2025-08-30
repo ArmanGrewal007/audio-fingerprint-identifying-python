@@ -12,8 +12,8 @@ class MongoDatabase(Database):
     self.client = MongoClient(config['db.dsn'])
     self.db = self.client[config['db.database']]
 
-  def insert(self, collection, document):
+  def insert(self, table, params):
     # if not self.db:
     self.connect()
 
-    return self.db[collection].insert_one(document).inserted_id
+    return self.db[table].insert_one(params).inserted_id

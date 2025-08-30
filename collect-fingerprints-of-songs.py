@@ -66,7 +66,7 @@ if __name__ == '__main__':
       for hash, offset in hashes:
         values.append((song_id, hash, offset))
 
-      msg = '   storing %d hashes in db' % len(values)
+      msg = f'   storing {len(values)} hashes in db'
       print(colored(msg, 'green'))
 
       db.store_fingerprints(values)

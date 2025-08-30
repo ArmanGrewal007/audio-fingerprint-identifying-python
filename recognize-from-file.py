@@ -1,4 +1,4 @@
-from libs.reader_microphone import FileReader
+from libs.reader_file import FileReader
 
 song = None
 seconds = 5

@@ -179,8 +179,11 @@ if __name__ == '__main__':
     songM = db.get_song_by_id(song_id)
 
     nseconds = round(float(largest) / fingerprint.DEFAULT_FS *
-                     fingerprint.DEFAULT_WINDOW_SIZE *
-                     fingerprint.DEFAULT_OVERLAP_RATIO, 5)
+                      fingerprint.DEFAULT_WINDOW_SIZE *
+                      fingerprint.DEFAULT_OVERLAP_RATIO, 5)
+
+    if songM is None or largest_count < 10:
+      return None
 
     return {
         "SONG_ID" : song_id,
@@ -199,6 +202,9 @@ if __name__ == '__main__':
     print(colored(msg, 'green') % total_matches_found)
 
     song = align_matches(matches)
+    if not song:
+      print(colored(' ** not enough confidence to identify song', 'red'))
+      sys.exit(0)
 
     msg = ' => song: %s (id=%d)\n'
     msg += '    offset: %d (%d secs)\n'

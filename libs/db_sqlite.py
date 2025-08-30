@@ -45,19 +45,19 @@ class SqliteDatabase(Database):
     for k, v in enumerate(params):
       key = v
       value = params[v]
-      conditions.append("%s = ?" % key)
+      conditions.append(f"{key} = ?")
       values.append(value)
 
     conditions = ' AND '.join(conditions)
-    query = "SELECT * FROM %s WHERE %s" % (table, conditions)
+    query = f"SELECT * FROM {table} WHERE {conditions}"
 
     return {
       "query": query,
       "values": values
     }
 
-  def findOne(self, table, params):
-    select = self.buildSelectQuery(table, params)
+  def findOne(self, table, where):
+    select = self.buildSelectQuery(table, where)
     return self.executeOne(select['query'], select['values'])
 
   def findAll(self, table, params):
@@ -68,12 +68,13 @@ class SqliteDatabase(Database):
     keys = ', '.join(list(params.keys()))
     values = list(params.values())
 
-    query = "INSERT INTO songs (%s) VALUES (?, ?)" % (keys);
+    query = f"INSERT INTO songs ({keys}) VALUES (?, ?)";
 
     self.cur.execute(query, values)
     self.conn.commit()
 
-    return self.cur.lastrowid
+    # Do not return anything to match the base class signature
+    return None
 
   def insertMany(self, table, columns, values):
     def grouper(iterable, n, fillvalue=None):
@@ -82,7 +83,7 @@ class SqliteDatabase(Database):
           in zip_longest(fillvalue=fillvalue, *args))
 
     for split_values in grouper(values, 1000):
-      query = "INSERT OR IGNORE INTO %s (%s) VALUES (?, ?, ?)" % (table, ", ".join(columns))
+      query = f"INSERT OR IGNORE INTO {table} ({', '.join(columns)}) VALUES (?, ?, ?)"
       self.cur.executemany(query, split_values)
 
     self.conn.commit()
