@@ -28,13 +28,15 @@ class FileReader(BaseReader):
 
     songname, extension = os.path.splitext(os.path.basename(self.filename))
 
+    channels = []
+    audiofile = None
     try:
       audiofile = AudioSegment.from_file(self.filename)
 
       if limit:
         audiofile = audiofile[:limit * 1000]
 
-      data = np.fromstring(audiofile._data, np.int16)
+      data = np.frombuffer(audiofile._data, dtype=np.int16)
 
       channels = []
       for chn in range(audiofile.channels):
@@ -43,24 +45,14 @@ class FileReader(BaseReader):
       fs = audiofile.frame_rate
     except audioop.error:
       print('audioop.error')
-      pass
-        # fs, _, audiofile = wavio.readwav(filename)
-
-        # if limit:
-        #     audiofile = audiofile[:limit * 1000]
-
-        # audiofile = audiofile.T
-        # audiofile = audiofile.astype(np.int16)
-
-        # channels = []
-        # for chn in audiofile:
-        #     channels.append(chn)
+      # If audioop.error occurs, channels remains an empty list and audiofile may be None
+      # Optionally, handle fallback logic here if needed
 
     return {
       "songname": songname,
       "extension": extension,
       "channels": channels,
-      "Fs": audiofile.frame_rate,
+      "Fs": audiofile.frame_rate if audiofile is not None else None,
       "file_hash": self.parse_file_hash()
     }
 

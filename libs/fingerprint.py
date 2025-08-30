@@ -63,7 +63,7 @@ def fingerprint(channel_samples, Fs=DEFAULT_FS,
     # show samples plot
     if plots:
       plt.plot(channel_samples)
-      plt.title('%d samples' % len(channel_samples))
+      plt.title(f'{len(channel_samples)} samples')
       plt.xlabel('time (s)')
       plt.ylabel('amplitude (A)')
       plt.show()
@@ -164,5 +164,5 @@ def generate_hashes(peaks, fan_value=DEFAULT_FAN_VALUE):
 
           # check if delta is between min & max
           if t_delta >= MIN_HASH_TIME_DELTA and t_delta <= MAX_HASH_TIME_DELTA:
-            h = hashlib.sha1(("%s|%s|%s" % (str(freq1), str(freq2), str(t_delta))).encode('utf-8'))
+            h = hashlib.sha1(f"{freq1!s}|{freq2!s}|{t_delta!s}".encode('utf-8'))
             yield (h.hexdigest()[0:FINGERPRINT_REDUCTION], t1)

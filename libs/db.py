@@ -7,8 +7,19 @@ class Database(object):
   def __init__(self, a):
     self.a = a
 
-  def connect(self): pass
-  def insert(self, table, params): pass
+  def connect(self):
+    raise NotImplementedError("connect must be implemented by a Database subclass")
+
+  def insert(self, table, params):
+    raise NotImplementedError("insert must be implemented by a Database subclass")
+
+  def findOne(self, table, where):
+    """Return a single matching row or None; subclasses should override with DB-specific logic."""
+    raise NotImplementedError("findOne must be implemented by a Database subclass")
+
+  def insertMany(self, table, columns, values):
+    """Insert multiple rows; subclasses should implement efficient bulk insert."""
+    raise NotImplementedError("insertMany must be implemented by a Database subclass")
 
   def get_song_by_filehash(self, filehash):
     return self.findOne(self.TABLE_SONGS, {
@@ -34,7 +45,7 @@ class Database(object):
     return song_id
 
   def get_song_hashes_count(self, song_id):
-    pass
+    raise NotImplementedError("get_song_hashes_count must be implemented by a Database subclass")
 
   def store_fingerprints(self, values):
     self.insertMany(self.TABLE_FINGERPRINTS,

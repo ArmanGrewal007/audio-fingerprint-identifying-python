@@ -45,11 +45,13 @@ class MicrophoneReader(BaseReader):
     self.data = [[] for i in range(channels)]
 
   def process_recording(self):
+    if self.stream is None:
+      raise RuntimeError("Stream is not initialized. Call start_recording() first.")
     data = self.stream.read(self.chunksize)
 
-    # http://docs.scipy.org/doc/numpy/reference/generated/numpy.fromstring.html
-    # A new 1-D array initialized from raw binary or text data in a string.
-    nums = numpy.fromstring(data, numpy.int16)
+    # http://docs.scipy.org/doc/numpy/reference/generated/numpy.frombuffer.html
+    # A new 1-D array initialized from raw binary data in a buffer.
+    nums = numpy.frombuffer(data, dtype=numpy.int16)
 
     for c in range(self.channels):
       self.data[c].extend(nums[c::self.channels])
@@ -58,9 +60,10 @@ class MicrophoneReader(BaseReader):
     return nums
 
   def stop_recording(self):
-    self.stream.stop_stream()
-    self.stream.close()
-    self.stream = None
+    if self.stream is not None:
+      self.stream.stop_stream()
+      self.stream.close()
+      self.stream = None
     self.recorded = True
 
   def get_recorded_data(self):
@@ -75,10 +78,10 @@ class MicrophoneReader(BaseReader):
     # values = ','.join(str(v) for v in self.data[1])
     # numpydata = numpy.hstack(self.data[1])
 
-    chunk_length = len(self.data[0]) / self.channels
+    chunk_length = len(self.data[0]) // self.channels
     result = numpy.reshape(self.data[0], (chunk_length, self.channels))
     # wf.writeframes(b''.join(numpydata))
-    wf.writeframes(result)
+    wf.writeframes(result.tobytes())
     wf.close()
 
   def play(self):
