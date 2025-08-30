@@ -33,7 +33,6 @@
 ## Arman's notes
 - Now this code uses python3.10
 - Updated requirements.txt file
-- 
 ```bash
 # Install python3.10.16
 pyenv install 3.10
